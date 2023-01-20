@@ -130,7 +130,7 @@ foreign key (preceptor_id) references preceptores(preceptor_id)
 
 -- Insercion de datos para las tablas 
 
--- Insercion tabla alumnos
+-- Insercion tabla padres
 
 insert into padres (nombre, apellido, telefono, direccion, localidad) values
 ('Carla', 'Perez', '11-31234567', 'Avenida Directorio 1034 7B', 'CABA'),
