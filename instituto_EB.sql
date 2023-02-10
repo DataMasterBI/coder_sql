@@ -104,6 +104,7 @@ padre_id INT not null,
 num_tarjeta varchar (20)  not null,
 vto_tarjeta varchar (5) not null,
 codseg_tarjeta int not null,
+cuota int not null,
 foreign key (alumno_id) references alumnos(alumno_id),
 foreign key (padre_id) references padres(padre_id)
 );
@@ -165,14 +166,14 @@ insert into alumnos (nombre, apellido, fecha_nac, padre_id) values
 ('Daniela', 'Milano', '20110312', 6),
 ('Diego', 'Carrillo', '20110122', 8),
 ('Maximo', 'Santa Cruz', '20101002', 9),
-('Martin', 'Gonzalez', '20130110', 1),
+('Martin', 'Gonzalez', '20130110', 1), -- 11
 ('Victor', 'Gonzalez', '20101120', 10),
 ('Gustavo', 'Kolker', '20100529', 11),
-('Nicolas', 'Tejeda', '20110622', 12),
+('Nicolas', 'Tejeda', '20110622', 12), -- 14
 ('Martin', 'Musolino', '20110815', 13),
 ('Emilio', 'Nievas', '20101201', 15),
 ('Erica', 'Nievas', '20140503', 15),
-('Marcelo', 'Rodriguez', '20130316', 4),
+('Marcelo', 'Rodriguez', '20130316', 4), -- 18
 ('Pedro', 'Kolker', '20120419', 11),
 ('Jesus', 'Milano', '20130612', 6),
 ('Carlos', 'Santa Cruz', '20130722', 9);
@@ -207,30 +208,30 @@ insert into profesores (nombre, apellido, email, telefono) values
 -- Insercion tabla materias
 
 insert into materias (nombre_materia, profesor_id, cantidad_creditos, alumno_id) values
-('Ingles', 3, 6, 1),
-('Frances', 3, 6, 2),
-('Ingles', 3, 6, 3),
-('Ingles', 3, 6, 4),
-('Frances', 3, 6, 5),
-('Ingles', 3, 6, 6),
-('Ingles', 3, 6, 7),
-('Frances', 3, 6, 8),
-('Ingles', 3, 6, 9),
-('Chino mandarin', 3, 6, 10),
-('Chino mandarin', 3, 6, 11),
-('Ingles', 3, 6, 12),
-('Ingles', 3, 6, 13),
-('Ingles', 3, 6, 14),
-('Aleman', 3, 6, 15),
+('Ingles', 1, 6, 1),
+('Frances', 4, 6, 2),
+('Ingles', 1, 6, 3),
+('Ingles', 1, 6, 4),
+('Frances', 4, 6, 5),
+('Ingles', 1, 6, 6),
+('Ingles', 1, 6, 7),
+('Frances', 4, 6, 8),
+('Ingles', 1, 6, 9),
+('Chino mandarin', 8, 6, 10),
+('Chino mandarin', 8, 6, 11),
+('Ingles', 1, 6, 12),
+('Ingles', 1, 6, 13),
+('Ingles', 1, 6, 14),
+('Aleman', 5, 6, 15),
 ('Gimnasia', 3, 6, 4),
 ('Gimnasia', 3, 6, 5),
 ('Gimnasia', 3, 6, 9),
 ('Gimnasia', 3, 6, 13),
 ('Gimnasia', 3, 6, 14),
-('Historia', 3, 6, 2),
-('Historia', 3, 6, 8),
-('Historia', 3, 6, 10),
-('Historia', 3, 6, 11);
+('Historia', 9, 6, 2),
+('Historia', 9, 6, 8),
+('Historia', 9, 6, 10),
+('Historia', 9, 6, 11);
 
 -- Insercion tabla actividades
 
@@ -248,7 +249,17 @@ insert into actividades (descripcion, profesor_id, alumno_id) values
 -- Insercion tabla faltas
 
 insert into faltas (fecha_falta, padre_id, alumno_id) values
-('20220303', 2, 7);
+('20220303', 2, 7),
+('20220303', 1, 1),
+('20220304', 2, 7),
+('20220305', 2, 7),
+('20220305', 2, 7),
+('20220306', 2, 7),
+('20220311', 2, 7),
+('20220312', 1, 1),
+('20220403', 2, 7),
+('20220403', 2, 7),
+('20220403', 2, 7);
 
 -- insercion tabla amonestaciones
 
@@ -280,10 +291,28 @@ insert into notas (fecha_nota, alumno_id, materia_id, profesor_id, nota_numerica
 
 -- Insercion tabla pagos_cuota
 
-insert into pagos_cuota (fecha_pago, alumno_id, padre_id, num_tarjeta, vto_tarjeta, codseg_tarjeta) values
-('20220301', 1, 1, '4545-3500-3500-4545', '03/28', 123),
-('20220301', 2, 7, '4545-3800-3200-1223', '08/24', 126),
-('20220301', 3, 4, '4549-2345-3500-4301', '03/25', 842);
+insert into pagos_cuota (fecha_pago, alumno_id, padre_id, num_tarjeta, vto_tarjeta, codseg_tarjeta, cuota) values
+('20220301', 1, 1, '4545-3500-3500-4545', '03/28', 123, 20000),
+('20220301', 2, 7, '4545-3800-3200-1223', '08/24', 126, 15000),
+('20220301', 3, 4, '4549-2345-3500-4301', '03/25', 842, 15000),
+('20220301', 4, 14, '4549-2345-3500-4301', '03/25', 842, 20000),
+('20220301', 5, 3, '4549-2345-3500-4301', '03/25', 842, 18000),
+('20220301', 6, 5, '4549-2345-3500-4301', '03/25', 842, 16000),
+('20220301', 7, 2, '4549-2345-3500-4301', '03/25', 842, 20000),
+('20220301', 8, 6, '4549-2345-3500-4301', '03/25', 842, 25000),
+('20220301', 9, 8, '4549-2345-3500-4301', '03/25', 842, 22000),
+('20220301', 10, 9, '4549-2345-3500-4301', '03/25', 842, 20000),
+('20220301', 11, 1, '4545-3500-3500-4545', '03/28', 123, 20000),
+('20220301', 12, 10, '4545-3800-3200-1223', '08/24', 126, 15000),
+('20220301', 13, 11, '4549-2345-3500-4301', '03/25', 842, 17000),
+('20220301', 14, 12, '4549-2345-3500-4301', '03/25', 842, 20000),
+('20220301', 15, 13, '4549-2345-3500-4301', '03/25', 842, 18000),
+('20220301', 16, 15, '4549-2345-3500-4301', '03/25', 842, 16000),
+('20220301', 17, 15, '4549-2345-3500-4301', '03/25', 842, 20000),
+('20220301', 18, 4, '4549-2345-3500-4301', '03/25', 842, 25000),
+('20220301', 19, 11, '4549-2345-3500-4301', '03/25', 842, 22000),
+('20220301', 20, 6, '4549-2345-3500-4301', '03/25', 842, 23000),
+('20220301', 21, 9, '4549-2345-3500-4301', '03/25', 842, 20000);
 
 
 -- Insercion tabla preceptores
@@ -299,5 +328,106 @@ insert into preceptores (nombre, apellido, email, telefono) values
 
 insert into expulsados (fecha_expulsion, preceptor_id, alumno_id, padre_id, descripcion) values
 ('20220302', 1, 21, 9, 'Por insultar a un profesor, accion que atenta contra el art. 5 del manual de convivencia del instituto');
+
+select * from pagos_cuota;
+/* CREACION DE 5 TABLAS VISTAS */
+
+-- 1ra tabla vista. 
+-- Hago un join para guardar una tabla vista con los nombres de los padres de los alumnos
+
+create or replace view padres_de_alumnos as
+select t1.alumno_id, t1.nombre, t1.apellido, t1.padre_id, t2.nombre as nombre_padre, t2.apellido as apellido_padre from alumnos as t1 
+left join padres as t2 on t1.padre_id=t2.padre_id;
+
+select * from padres_de_alumnos;
+
+-- 2da tabla vista
+-- Hago un join para guardar que profesores dictan cada materia y sus respectivos datos
+
+create or replace view dictado_materias as
+select t1.materia_id, t1.nombre_materia, t1.profesor_id, t2.nombre, t2.apellido, t2.telefono 
+from materias as t1
+left join profesores as t2 on t1.profesor_id = t2.profesor_id;
+
+select * from dictado_materias;
+
+-- 3ra tabla vista
+-- Hago un join para guardar que profesores dictan cada actividad extracurricular y sus respectivos datos
+
+create or replace view dictado_actividades as
+select t1.actividad_id, t1.descripcion, t1.profesor_id, t2.nombre, t2.apellido, t2.telefono 
+from actividades as t1
+left join profesores as t2 on t1.profesor_id = t2.profesor_id;
+
+select * from dictado_actividades;
+
+-- 4ta tabla vista
+-- Hago un join para verificar que alumnos son amonestados y cruzarlo con los datos de sus padres para poder
+-- ponerlos en conocimiento del comportamiento de sus hijos.
+
+create or replace view control_amonestados as
+select t1.fecha_amonestacion, t1.profesor_id, t1.alumno_id, t1.cantidad_amonestacion, t1.motivo, t2.nombre as Nombre_Padre, t2.apellido as Apellido_Padre, t2.telefono
+from amonestaciones as t1
+left join padres as t2 on t1.padre_id = t2.padre_id;
+
+select * from control_amonestados;
+
+-- 5ta tabla vista
+-- Hago un join para cruzar las tablas de alumnos y la de pagos_cuota con la finalidad de controlar
+-- que los alumnos esten al corriente de pago.
+
+create or replace view control_pagos as
+select t1.fecha_pago, t1.alumno_id, t1.padre_id, t1.cuota, t2.nombre as Nombre_Alumno, t2.apellido as Apellido_Alumno
+from pagos_cuota as t1
+left join alumnos as t2 on t1.alumno_id = t2.alumno_id;
+
+select * from control_pagos;
+
+/* CREACION DE FUNCIONES */
+
+-- FUNCION 1
+-- CREO UNA FUNCION QUE COLOQUE UN MENSAJE A LOS ALUMNOS QUE TIENEN UNA BECA, QUE SON
+-- LOS ALUMNOS QUE PAGAN UNA CUOTA MENOR A $20.000
+
+DELIMITER //
+create function becados () returns varchar(18)
+deterministic
+begin
+ declare mensaje varchar(18);
+ 
+  IF @cuota <= 20000
+  THEN
+	set mensaje="BECADO";
+  ELSE
+	set mensaje="SIN BECA";
+  END IF;
+  return mensaje;
+end ;
+//
+drop function becados
+select pago_id, fecha_pago, alumno_id, padre_id, cuota, if(cuota<20000, 'BECADO','NO BECADO') from pagos_cuota;
+select cuota, becados() from pagos_cuota;
+
+-- Funcion 2
+-- CREO UNA FUNCION PARA QUE SE CONTROLEN LOS ALUMNOS QUE TIENEN FALTAS  
+
+delimiter //
+create function controlar_faltas (alumno int) returns int
+deterministic
+begin
+ declare alumno int;
+ declare total int;
+ set total=(select count(alumno_id) from faltas where alumno_id = @alumno);
+  return total;
+end ;
+//
+
+drop function controlar_faltas;
+select alumno_id, count(alumno_id) from faltas where alumno_id = 1;
+select controlar_faltas(1);
+select * from faltas
+drop function controlar_faltas
+
+-- FIN DE LAS FUNCIONES
 
 -- Fin del script
