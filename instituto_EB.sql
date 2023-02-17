@@ -385,28 +385,25 @@ select * from control_pagos;
 
 /* CREACION DE FUNCIONES */
 
--- FUNCION 1
--- CREO UNA FUNCION QUE COLOQUE UN MENSAJE A LOS ALUMNOS QUE TIENEN UNA BECA, QUE SON
--- LOS ALUMNOS QUE PAGAN UNA CUOTA MENOR A $20.000
 
-DELIMITER //
-create function becados () returns varchar(18)
+-- Funcion 1
+-- FUNCION QUE SUMA TODAS LAS CUOTAS POR DIA PARA CONOCER CUAL ES LA FACTURACION DEL INSTITUTO
+
+delimiter //
+create function facturacion (fecha date) returns int
 deterministic
 begin
- declare mensaje varchar(18);
- 
-  IF @cuota <= 20000
-  THEN
-	set mensaje="BECADO";
-  ELSE
-	set mensaje="SIN BECA";
-  END IF;
-  return mensaje;
+	declare total int;
+	set total=(select sum(cuota) from pagos_cuota where fecha_pago = fecha);
+	return total;
 end ;
 //
-drop function becados
-select pago_id, fecha_pago, alumno_id, padre_id, cuota, if(cuota<20000, 'BECADO','NO BECADO') from pagos_cuota;
-select cuota, becados() from pagos_cuota;
+
+
+select sum(cuota) from pagos_cuota where fecha_pago = '2022-03-01'
+select * from pagos_cuota
+select facturacion('2022-03-01');
+drop function facturacion
 
 -- Funcion 2
 -- CREO UNA FUNCION PARA QUE SE CONTROLEN LOS ALUMNOS QUE TIENEN FALTAS  
@@ -415,19 +412,48 @@ delimiter //
 create function controlar_faltas (alumno int) returns int
 deterministic
 begin
- declare alumno int;
  declare total int;
- set total=(select count(alumno_id) from faltas where alumno_id = @alumno);
+ set total=(select alumno_id, count(alumno_id) from faltas where alumno_id = alumno);
   return total;
 end ;
 //
 
 drop function controlar_faltas;
-select alumno_id, count(alumno_id) from faltas where alumno_id = 1;
+select count(alumno_id) from faltas where alumno_id = 1;
 select controlar_faltas(1);
 select * from faltas
-drop function controlar_faltas
 
 -- FIN DE LAS FUNCIONES
 
+/* CREACION DE STORE PROCEDURES */
+
+-- CREO UN PROCEDIMIENTO ALMACENADO PARA INSERTAR NUEVOS ALUMNOS EN SU CORRESPONDIENTE TABLA
+-- CON LA FINALIDAD DE QUE NO SE MANIPULEN LAS TABLAS POR PERSONAS NO IDONEAS EN EL TEMA.
+
+DELIMITER //
+create procedure ingresar_alumno (IN nombre varchar(50), IN apellido varchar(50), IN fecha_nac date, IN padre_id int)
+begin
+	insert into alumnos values (nombre, apellido, fecha_nac, padre_id);
+end
+//
+
+CALL ingresar_alumno ('Martina','Gonzalez','20120504',1);
+SELECT padre_id, nombre, apellido from padres where padre_id=1
+select t1.alumno_id, t1.nombre, t1.apellido, t1.padre_id from alumnos as t1 
+left join padres as t2 on t1.padre_id=t2.padre_id;
+
+-- CREO UN PROCEDIMIENTO ALMACENADO PARA INSERTAR NUEVOS PADRES EN SU CORRESPONDIENTE TABLA
+-- CON LA FINALIDAD DE QUE NO SE MANIPULEN LAS TABLAS POR PERSONAS NO IDONEAS EN EL TEMA.
+
+DELIMITER //
+create procedure ingresar_padre (IN nombre varchar(50), IN apellido varchar(50), IN telefono varchar(15), IN direccion varchar(50), IN localidad varchar(50))
+begin
+	insert into padres values (nombre, apellido, telefono, direccion, localidad);
+end
+//
+
+CALL ingresar_padre ('Juan','Bautista','11-55551212','Moreno 2025', 'CABA');
+
 -- Fin del script
+
+
