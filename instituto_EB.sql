@@ -334,6 +334,8 @@ select * from pagos_cuota;
 
 -- 1ra tabla vista. 
 -- Hago un join para guardar una tabla vista con los nombres de los padres de los alumnos
+-- Esta tabla vista utiliza las tablas "padres" y "alumnos" y su objetivo es mostrar el nombre del padre
+-- de un determinado alumno evitando la manipulacion de tablas por personas no idoneas
 
 create or replace view padres_de_alumnos as
 select t1.alumno_id, t1.nombre, t1.apellido, t1.padre_id, t2.nombre as nombre_padre, t2.apellido as apellido_padre from alumnos as t1 
@@ -343,6 +345,8 @@ select * from padres_de_alumnos;
 
 -- 2da tabla vista
 -- Hago un join para guardar que profesores dictan cada materia y sus respectivos datos
+-- Esta tabla vista utiliza las tablas "profesores" y "materias" y su objetivo es mostrar el nombre del profesor
+-- que dicta una determinada materia evitando la manipulacion de tablas por personas no idoneas.
 
 create or replace view dictado_materias as
 select t1.materia_id, t1.nombre_materia, t1.profesor_id, t2.nombre, t2.apellido, t2.telefono 
@@ -353,6 +357,8 @@ select * from dictado_materias;
 
 -- 3ra tabla vista
 -- Hago un join para guardar que profesores dictan cada actividad extracurricular y sus respectivos datos
+-- Esta tabla vista utiliza las tablas "profesores" y "actividades" y su objetivo es mostrar el nombre del profesor
+-- que dicta una determinada actividad evitando la manipulacion de tablas por personas no idoneas.
 
 create or replace view dictado_actividades as
 select t1.actividad_id, t1.descripcion, t1.profesor_id, t2.nombre, t2.apellido, t2.telefono 
@@ -363,7 +369,8 @@ select * from dictado_actividades;
 
 -- 4ta tabla vista
 -- Hago un join para verificar que alumnos son amonestados y cruzarlo con los datos de sus padres para poder
--- ponerlos en conocimiento del comportamiento de sus hijos.
+-- ponerlos en conocimiento del comportamiento de sus hijos. Esta vista usa las tablas "amonestaciones" y "padres"
+
 
 create or replace view control_amonestados as
 select t1.fecha_amonestacion, t1.profesor_id, t1.alumno_id, t1.cantidad_amonestacion, t1.motivo, t2.nombre as Nombre_Padre, t2.apellido as Apellido_Padre, t2.telefono
@@ -374,7 +381,7 @@ select * from control_amonestados;
 
 -- 5ta tabla vista
 -- Hago un join para cruzar las tablas de alumnos y la de pagos_cuota con la finalidad de controlar
--- que los alumnos esten al corriente de pago.
+-- que los alumnos esten al corriente de pago. Esta vista utiliza las tablas "alumnos" y "pagos_cuota"
 
 create or replace view control_pagos as
 select t1.fecha_pago, t1.alumno_id, t1.padre_id, t1.cuota, t2.nombre as Nombre_Alumno, t2.apellido as Apellido_Alumno
@@ -387,7 +394,8 @@ select * from control_pagos;
 
 
 -- Funcion 1
--- FUNCION QUE SUMA TODAS LAS CUOTAS POR DIA PARA CONOCER CUAL ES LA FACTURACION DEL INSTITUTO
+-- FUNCION QUE SUMA TODAS LAS CUOTAS POR DIA PARA CONOCER CUAL ES LA FACTURACION DEL INSTITUTO.
+-- UTILIZA LA TABLA "PAGOS_CUOTA" SUMANDO LOS CONCEPTOS POR DIA UTILIZANDO EL ARGUMENTO INGRESADO.
 
 delimiter //
 create function facturacion (fecha date) returns int
@@ -406,7 +414,8 @@ select facturacion('2022-03-01');
 drop function facturacion
 
 -- Funcion 2
--- CREO UNA FUNCION PARA QUE SE CONTROLEN LOS ALUMNOS QUE TIENEN FALTAS  
+-- CREO UNA FUNCION PARA QUE SE CONTROLEN LOS ALUMNOS QUE TIENEN FALTAS. 
+-- SE UTILIZA LA TABLA "FALTAS" Y SE FILTRA POR EL ARGUMENTO "ALUMNO"
 
 delimiter //
 create function controlar_faltas (alumno int) returns int
@@ -427,8 +436,10 @@ select * from faltas
 
 /* CREACION DE STORE PROCEDURES */
 
+-- 1ER STORE PROCEDURE
 -- CREO UN PROCEDIMIENTO ALMACENADO PARA INSERTAR NUEVOS ALUMNOS EN SU CORRESPONDIENTE TABLA
--- CON LA FINALIDAD DE QUE NO SE MANIPULEN LAS TABLAS POR PERSONAS NO IDONEAS EN EL TEMA.
+-- Y NO SE PIERDA TIEMPO INNECESARIAMENTE INGRESANDO UNO POR UNO LOS REGISTROS. EL BENEFICIO ES MAYOR
+-- CUANDO SE TIENEN MUCHOS REGISTROS PARA INGRESAR, YA QUE LOS INSERTA DE UNA VEZ. 
 
 DELIMITER //
 create procedure ingresar_alumno (IN nombre varchar(50), IN apellido varchar(50), IN fecha_nac date, IN padre_id int)
@@ -442,8 +453,11 @@ SELECT padre_id, nombre, apellido from padres where padre_id=1
 select t1.alumno_id, t1.nombre, t1.apellido, t1.padre_id from alumnos as t1 
 left join padres as t2 on t1.padre_id=t2.padre_id;
 
+-- 2DO STORE PROCEDURE
 -- CREO UN PROCEDIMIENTO ALMACENADO PARA INSERTAR NUEVOS PADRES EN SU CORRESPONDIENTE TABLA
--- CON LA FINALIDAD DE QUE NO SE MANIPULEN LAS TABLAS POR PERSONAS NO IDONEAS EN EL TEMA.
+-- Y NO SE PIERDA TIEMPO INNECESARIAMENTE INGRESANDO UNO POR UNO LOS REGISTROS. EL BENEFICIO ES MAYOR
+-- CUANDO SE TIENEN MUCHOS REGISTROS PARA INGRESAR, YA QUE LOS INSERTA DE UNA VEZ. 
+
 
 DELIMITER //
 create procedure ingresar_padre (IN nombre varchar(50), IN apellido varchar(50), IN telefono varchar(15), IN direccion varchar(50), IN localidad varchar(50))
