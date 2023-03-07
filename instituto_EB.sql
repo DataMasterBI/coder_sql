@@ -136,6 +136,10 @@ foreign key (preceptor_id) references preceptores(preceptor_id)
 
 -- Insercion tabla padres
 
+### INSERCIONES CONTROLADAS
+
+start transaction;
+
 insert into padres (nombre, apellido, telefono, direccion, localidad) values
 ('Carla', 'Perez', '11-31234567', 'Avenida Directorio 1034 7B', 'CABA'),
 ('Carlos', 'Lopez', '11-31274989', 'Rosario 134 7A', 'Avellaneda'),
@@ -153,30 +157,60 @@ insert into padres (nombre, apellido, telefono, direccion, localidad) values
 ('Diego', 'Garcia', '11-73348222', 'Venezuela 1888 2A', 'CABA'),
 ('Jonathan', 'Nievas', '11-74448122', 'Avenida Entre Rios 884 2A', 'CABA');
 
+rollback;
+-- delete from padres where padre_id=1   ## Elimino un regitro 
+commit;
+
+
 -- Insercion tabla alumnos
+
+### INSERCIONES CONTROLADAS
+
+start transaction;
+
 
 insert into alumnos (nombre, apellido, fecha_nac, padre_id) values
 ('Juana', 'Gonzalez', '20100303', 1),
 ('Martin', 'Navarro', '20101122', 7),
 ('Vito', 'Rodriguez', '20110804', 4),
-('Rodrigo', 'Garcia', '20100522', 14),
+('Rodrigo', 'Garcia', '20100522', 14);
+
+savepoint lote_1;
+
+insert into alumnos (nombre, apellido, fecha_nac, padre_id) values
 ('Fabian', 'Acuña', '20100923', 3),
 ('Federico', 'Viña', '20100811', 5),
 ('Mariano', 'Lopez', '20100715', 2),
-('Daniela', 'Milano', '20110312', 6),
+('Daniela', 'Milano', '20110312', 6);
+
+savepoint lote_2;
+
+insert into alumnos (nombre, apellido, fecha_nac, padre_id) values
 ('Diego', 'Carrillo', '20110122', 8),
 ('Maximo', 'Santa Cruz', '20101002', 9),
-('Martin', 'Gonzalez', '20130110', 1), -- 11
+('Martin', 'Gonzalez', '20130110', 1), 
 ('Victor', 'Gonzalez', '20101120', 10),
 ('Gustavo', 'Kolker', '20100529', 11),
-('Nicolas', 'Tejeda', '20110622', 12), -- 14
+('Nicolas', 'Tejeda', '20110622', 12), 
 ('Martin', 'Musolino', '20110815', 13),
 ('Emilio', 'Nievas', '20101201', 15),
 ('Erica', 'Nievas', '20140503', 15),
-('Marcelo', 'Rodriguez', '20130316', 4), -- 18
+('Marcelo', 'Rodriguez', '20130316', 4), 
 ('Pedro', 'Kolker', '20120419', 11),
 ('Jesus', 'Milano', '20130612', 6),
 ('Carlos', 'Santa Cruz', '20130722', 9);
+
+rollback;
+
+-- delete from alumnos where alumno_id=1;
+
+-- release savepoint lote_1;
+
+commit;
+
+### FIN DE INSERCIONES CONTROLADAS
+
+
 
 /* CONSULTA PARA SABER CUAL ES EL PADRE DEL ALUMNO
 
