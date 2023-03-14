@@ -502,6 +502,43 @@ end
 
 CALL ingresar_padre ('Juan','Bautista','11-55551212','Moreno 2025', 'CABA');
 
+/* CREACION DE TRIGGERS */
+-- 1ER TRIGGER
+-- ESTE TRIGGER DETECTARÁ LA CANTIDAD DE FALTAS DE UN ALUMNO, Y SI SON MAYORES A 10 SE GATILLARÁ CON LA FINALIDAD
+-- DE CONTROLAR EL PORQUÉ DE ESTAS FALTAS Y ASI HACER UN SEGUIMIENTO DE LA SITUACIÓN POR PARTE DE LA DIRECCIÓN
+-- DEL INSTITUTO 
+
+DELIMITER //
+create trigger check_faltas
+after insert on faltas
+for each row
+begin
+	if (select count(alumno_id) from faltas group by alumno_id)>10 then
+		signal sqlstate '45000'
+		set MESSAGE_TEXT="Alumno con mas de 10 faltas, avisar a la dirección";
+    end if;
+end    
+//
+
+
+-- 2do TRIGGER
+-- ESTE TRIGGER DETECTARÁ LA CANTIDAD DE AMONESTACIONES DE UN ALUMNO, Y SI SON MAYORES A 10 SE GATILLARÁ 
+-- CON LA FINALIDAD DE CONTROLAR EL PORQUÉ DE ESTOS COMPORTAMIENTOS Y ASI HACER UN SEGUIMIENTO DE LA SITUACIÓN
+
+DELIMITER //
+create trigger check_amonestaciones
+after insert on amonestaciones
+for each row
+begin
+	if (select count(alumno_id) from amonestaciones group by alumno_id)>10 then
+		signal sqlstate '45000'
+		set MESSAGE_TEXT="Alumno con más de 10 amonestaciones, avisar a la dirección";
+    end if;
+end    
+//
+
+
 -- Fin del script
+
 
 
