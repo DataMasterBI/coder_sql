@@ -132,6 +132,26 @@ foreign key (preceptor_id) references preceptores(preceptor_id)
 );
 
 
+create table IF NOT EXISTS biblioteca (
+libro_id INT auto_increment not null primary key,
+isbn varchar(50) not null,
+titulo varchar(50) not null,
+categoria varchar(50) not null,
+paginas INT not null,
+autor varchar(50) not null
+);
+
+
+create table IF NOT EXISTS prestamos (
+prestamo_id INT auto_increment not null primary key,
+fecha_prestamo DATE not null,
+libro_id INT not null,
+alumno_id INT not null,
+foreign key (libro_id) references biblioteca(libro_id),
+foreign key (alumno_id) references alumnos(alumno_id)
+);
+
+
 -- Insercion de datos para las tablas 
 
 -- Insercion tabla padres
@@ -363,7 +383,27 @@ insert into preceptores (nombre, apellido, email, telefono) values
 insert into expulsados (fecha_expulsion, preceptor_id, alumno_id, padre_id, descripcion) values
 ('20220302', 1, 21, 9, 'Por insultar a un profesor, accion que atenta contra el art. 5 del manual de convivencia del instituto');
 
-select * from pagos_cuota;
+
+-- Insercion tabla biblioteca
+
+insert into biblioteca (isbn, titulo, categoria, paginas, autor) values
+('123456789', 'Matematicas I', 'Matematica', 234,  'Hebe Rabuffetti'),
+('987654321', 'Biologia I', 'Ciencias Naturales', 366, 'Carlos Rico'),
+('123498765', 'Historia Argentina', 'Historia', 462, 'Marcos Mansilla'),
+('019293949', 'Geografia de Europa', 'Geografia', 388, 'Raul Otero'),
+('767392911', 'Sociologia II', 'Sociologia', 542, 'Rodrigo Pini');
+
+-- Insercion tabla prestamos
+
+insert into prestamos (fecha_prestamo, libro_id, alumno_id) values
+('20230313',1,12 ), 
+('20230313',2,8 ), 
+('20230313',3,16 ), 
+('20230313',4,7 ), 
+('20230313',5,11 );
+
+-- Fin insercion de datos
+
 /* CREACION DE 5 TABLAS VISTAS */
 
 -- 1ra tabla vista. 
